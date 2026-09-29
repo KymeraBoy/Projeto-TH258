@@ -1,0 +1,182 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- PACOTES BÁSICOS E IDIOMA ---
+\usepackage[utf8]{inputenc}      % Suporte a caracteres UTF-8
+\usepackage[brazil]{babel}       % Traduz termos e ajusta hifenização
+\usepackage[T1]{fontenc}         % Suporte a acentuação correta
+\usepackage{indentfirst}         % Indenta o primeiro parágrafo
+\usepackage{xcolor}              % Suporte a cores
+\usepackage{fancyhdr}            % Personalização de cabeçalhos e rodapés
+\usepackage{graphicx}            % Inclusão de imagens/logos
+\usepackage{helvet}              % Pacote para fonte estilo Arial/Helvetica
+\usepackage{enumitem}            % Personalização avançada de listas/itens
+\usepackage{amsmath}             % Suporte a símbolos e comandos matemáticos (\text)
+\usepackage{calc} % Habilita o uso de \widthof para cálculos de dimensão
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{circuitikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\pgfplotsset{compat=1.18}
+
+% --- SELEÇÃO DE FONTE DO DOCUMENTO ---
+% Descomente a linha da fonte que deseja utilizar no documento inteiro:
+\usepackage{mathptmx}            % Opção 1: Times New Roman
+%\usepackage{helvet} \renewcommand{\familydefault}{\sfdefault} % Opção 2: Arial
+
+% --- FORMATAÇÃO DE PÁGINA E MARGENS ---
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    top=4.2cm,                   % Ajustado para acomodar o cabeçalho de 1.5cm
+    bottom=2.0cm,
+    left=3.0cm,
+    right=2.0cm,
+    headheight=1.5cm,            % Altura do cabeçalho igual à da logo (1.5cm)
+    headsep=0.8cm
+}
+
+% --- DEFINIÇÃO DE CORES ---
+\definecolor{laranjaufc}{HTML}{E66100} % Tom de laranja institucional
+\definecolor{cinzaresposta}{HTML}{2B2B2B} % Tom escuro e elegante para a resposta/debate
+
+% --- CONFIGURAÇÃO DO CABEÇALHO ---
+\pagestyle{fancy}
+\fancyhf{} % Limpa cabeçalho e rodapé padrão
+
+\fancyhead[C]{%
+    \setlength{\fboxsep}{0pt}% Remove espaçamento interno padrão do colorbox
+    % 1. Armazena a imagem em uma caixa temporária para medir sua largura exata
+    \sbox0{\includegraphics[height=1.5cm]{UFC_logo.png}}%
+    \vbox to 1.5cm{%
+        \vfil
+        \hbox to \textwidth{%
+            % 2. Exibe a logo alinhada à esquerda
+            \usebox0%
+            % 3. Espaço de 1 cm entre a logo e o retângulo
+            \hspace{0.5cm}%
+            % 4. Retângulo laranja preenchendo o restante da linha até a margem direita
+            \colorbox{laranjaufc}{%
+                \makebox[\dimexpr\textwidth-\wd0-1cm\relax][l]{%
+                    \vbox to 1.5cm{%
+                        \vfil
+                        \hbox{%
+                            \hspace{0.25cm}% Margem de 0.2cm da extremidade esquerda do retângulo
+                            \fontfamily{phv}\selectfont % Define fonte Arial (Helvetica)
+                            \color{white}\bfseries\small
+                            \begin{tabular}{@{}l@{}}
+                                UNIVERSIDADE FEDERAL DO CEARÁ -- UFC \\
+                                DEPARTAMENTO DE ENGENHARIA ELÉTRICA
+                            \end{tabular}%
+                        }%
+                        \vfil
+                    }%
+                }%
+            }%
+        }%
+        \vfil
+    }%
+}
+
+% Remove a linha horizontal padrão do fancyhdr
+\renewcommand{\headrulewidth}{0pt}
+
+% Número da página no rodapé à direita
+\fancyfoot[R]{\thepage}
+
+% Remove a linha horizontal padrão do fancyhdr
+\renewcommand{\headrulewidth}{0pt}
+
+% --- VARIÁVEIS DE IDENTIFICAÇÃO DO RELATÓRIO ---
+\newcommand{\disciplina}{Laboratório de Eletrônica de Potência}
+\newcommand{\coddisciplina}{TH258}
+\newcommand{\professor}{Prof. Ernande Eugênio}
+\newcommand{\numpratica}{Documento Digital - Projeto de um conversor não-isolado CC-CC Buck}
+
+% --- CORPO DO DOCUMENTO ---
+\begin{document}
+
+% --- CAPA / BLOCO DE IDENTIFICAÇÃO ---
+\begin{titlepage}
+    \thispagestyle{fancy} % Força o aparecimento do cabeçalho na capa
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \textbf{\disciplina\ (\coddisciplina)}\par}
+    \vspace{0.3cm}
+    {\large \professor\par}
+    
+    \vspace{2.5cm}
+    
+    {\LARGE \bfseries \numpratica\par}
+    
+    \vfill
+    
+    \begin{center}
+        \textbf{Alunos / Matrículas:}\\[0.3cm]
+        \begin{tabular}{ll}
+            Arthur Castro & 400325 \\
+            Dandara Rodrigues & 553506 \\
+            Gustavo Alves & 537707
+        \end{tabular}
+    \end{center}
+    
+    \vfill
+    
+    {\large Fortaleza - CE\par}
+    {\large \today\par}
+\end{titlepage}
+
+% Ajusta a numeração de páginas para iniciar na página seguinte à capa
+\clearpage
+\pagenumbering{arabic}
+
+% ==============================================================================
+% OBJETIVOS (Página Exclusiva)
+% ==============================================================================
+\section{Meus comentários}
+
+Esse documento vai ser o DOCUMENTO DIGITAL de entraga do trabalho do laboratório.
+
+Começando pelo começo temos a proposta do trabalho que é projetar e construir um conversor CC-CC controlado por PWM que funcine no modo continuo de operação e em malha aberta.
+O modelo escolhido foi do tipo Buck (abaixador).
+Esse documento deve contemplar o processo de dimensionamento do mesmo e a escolha de cada componente baseada nos parametros que serão calculados, Ou seja vamos calcular as especificações dos componente que satisfação as condições de projeto e depois escolher as opções comerciais que mais se aproximam das calculadas.
+Um fator interessante é que o indutor provavelmente serpa feito por nos pois ele foi especifico quanto a essa parte de deixar claro o dimensionamento do mesmo.
+
+O que ais vai pessar na avaliação vai ser o funcionamento do conversor, se ele não operar direito não adiante esse documento.
+
+Algums pontos extras vão ser disponibilizados, provavelmente por que vai ser dificil do conversor por si só entregar o desempenho esperado, porém como são pontos extras eles não serão o foco, apesar de que alguns deles estão no caminho então vão acabar sendo conteplados por nos.
+
+Os pontos extras são para simulação, e aqui tem uma pegadinha que é so vai contar a simulação que levar em conta os parametros dos elementos escolhidos, ou seja, não é a simulação inicial que considera elementos ideias. Dpeois vai ponto extra pro circuito de alimentação soldado, o que ao meu ver perde um pouco o sentido da coisa, pois vai deixar de ser um cc-cc pra um ca-cc, mas acho que desede que a gente consiga separar as coisas na montagem da pra levar em conta. Da mesma maneira vai ter ponto pro circuito de controle em placa soldada. Vai ter ponto também pra controle em malha fechada da corrente do indutor tensão do capacitor e dosi dois juntos.
+
+O que tem que vir a seguir:
+
+\begin{itemize}
+    
+\item uma explicação sobre a topologia do buck mostrando como ele funciona, os modos de operação, equações, e destacando os 5 componentes principais dele. o foda é que enquanto se falar é bom já ir definindo os paramentros, para nçao ficar redundante, entçao já começa falando da topologia que ela tem 5 elementose vai confomre for faando vai matando um por um
+\item Os paramentros de desempenhod do projeto, é bom exmplicar isso por que são fixos, e a gente vai ter que usar isso nas explicações, se bem que é bommlistar eles, ir pincelando eles e depois que todas as equações forem mostradas, sem enhum valor, apenas com as variaveis, e logo depois da gente ter explicado o que cada uma é, a gente ir depois só "o lembra disso aqui que a gente definiu o que representa, pra esse porjeto vai X" e depois ir substituindo nas equações
+\item Uma vez que a gente já definiu os componentes, a gente pode mostrar a simulação com os compontnees ideias, só pra provar que funcion
+\item depois de provado que funciona via simulação a gente apresenta a opções de mercado que escolhemos, não explicando como a gente escolheu, so dizendo que foi esse o escolhido e dizendo como ele atende aos criterios de projeto.
+\item apresnentado as opções, isso mata tambem a parte de apresentar os compontes a gente vai pra simulação usando os dados deles. ai sim é que o negocio vai pegar, pq essa parte eu ainda não fiz, então eu não sei direito o que esperar, aém de que vai sair diferente da outra simulação.
+\item uma vez que de certo a simulação com os doados dos compontes comerciais a gente vai subsituir dua coias a fonte de alimentação e incluir o sistema de controle. depois disso é partir pra comprar tudo e registrar o processo de montagem, não da pra escrever mais nada antes de fazer isso pq o restante depende desa montagem. pois vão vir os testes antes de apresentar, e os dados do testem podem exigir ou mudanças pesadas ou apenas confirmar que tudo deu certo.
+\end{itemize}
+
+% ============================================= %
+% OBJETIVOS
+% ============================================= %
+
+\section{Objetivos}
+
+Esse documento tem como objetivos registra o projeto de um conversor Buck em malha aberta. Os cálculos de dimensionamentos de componentes, principio de funcionamento, análise dos componentes escolhidos e simulações serão apesentados adiante.
+
+% ============================================= %
+% INPUTS
+% ============================================= %
+
+
+\input{intro.tex}
+
+\input{dimensionamento.tex}
+
+\end{document}

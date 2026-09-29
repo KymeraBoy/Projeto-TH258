@@ -1,0 +1,287 @@
+\section{Dimensionamento dos componentes}
+
+A primeira parte do projeto consiste na dimensionamento das grandezas dos 4 componentes princiais do conversor. Todos devem ser obtidos por meio das deduções matemáticas a seguir visando atender aos critérios de projeto apresentados na tabela \ref{tab:especificacoes-buck}.
+
+\begin{table}[ht]
+    \centering
+    \caption{Especificações do conversor Buck.}
+    \label{tab:especificacoes-buck}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Parâmetro} & \textbf{Símbolo} & \textbf{Valor} \\
+        \midrule
+
+        Tensão de entrada
+            & $V_{\mathrm{IN}}$
+            & \SI{24}{\volt} \\
+
+        Tensão de saída
+            & $V_{\mathrm{OUT}}$
+            & \SI{12}{\volt} \\
+
+        Potência de saída
+            & $P_{\mathrm{OUT}}$
+            & \SI{40}{\watt} \\
+
+        Rendimento
+            & $\eta$
+            & 95--100\,\% \\
+
+        Frequência de chaveamento
+            & $f_{\mathrm{S}}$
+            & \SI{50}{\kilo\hertz} \\
+
+        Ondulação de corrente no indutor
+            & $\Delta I_{\mathrm{L}}$
+            & 5\,\% \\
+
+        Ondulação de tensão no capacitor
+            & $\Delta V_{\mathrm{C}}$
+            & 1\,\% \\
+
+        \bottomrule
+    \end{tabular}
+
+\end{table}
+
+Os primeiros parametros a serem determinados são o Duty Cycle e a corrente de saída, pois dependem apenas das tensões e da potência de projeto. As equações \ref{eq:duty-cycle-proj} e \ref{eq:corrente-saida} sintetizam os cálculos.
+
+\begin{equation}
+    D = \frac{V_{\mathrm{OUT}}}{V_{\mathrm{IN}}}
+    = \frac{12}{24}
+    = 0{,}5
+    \quad\Rightarrow\quad
+    \boxed{D = 50\,\%}
+    \label{eq:duty-cycle-proj}
+\end{equation}
+
+\begin{equation}
+    I_{\mathrm{OUT}} =
+    \frac{P_{\mathrm{OUT}}}{V_{\mathrm{OUT}}}=
+    \frac{40}{12}
+    \approx 3{,}33\,\mathrm{A}
+    \quad\Rightarrow\quad
+    \boxed{I_{\mathrm{OUT}} \approx 3{,}33\,\mathrm{A}}
+    \label{eq:corrente-saida}
+\end{equation}
+  
+Com a corrente de saída calculada, pode-se encontrar a ondulação de corrente máxima aceitável por critério de projeto. Ela corresponde a diferença entre a corrente de pico e vale da saída, como mostra a figura \ref{fig:ondulacao-corrente-indutor}. Ambos os valores são calculados nas equações \ref{eq:ondulacao-corrente}, \ref{eq:corrente-pico} e \ref{eq:corrente-vale}.
+
+\begin{figure}[h]
+    \centering
+    \caption{Ondulação da corrente no indutor de um conversor Buck.}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.9\textwidth,
+            height=7cm,
+            axis lines=middle,
+            xlabel={$t$},
+            ylabel={$i_L(t)$},
+            xmin=0,
+            xmax=4,
+            ymin=0,
+            ymax=7,
+            xtick=\empty,
+            ytick=\empty,
+            axis line style={->},
+            xlabel style={anchor=west},
+            ylabel style={anchor=south},
+            clip=false
+        ]
+
+        % Corrente média do indutor
+        \addplot[
+            dashed,
+            domain=0:4,
+            samples=2
+        ] {4};
+
+        \addplot[
+            dashed,
+            domain=0:4,
+            samples=2
+        ] {3.5};
+
+        \addplot[
+            dashed,
+            domain=0:4,
+            samples=2
+        ] {3};
+        
+        % Corrente do indutor
+        \addplot[
+            thick,
+            domain=0:1,
+            samples=2
+        ] {3 + x};
+
+        \addplot[
+            thick,
+            domain=1:2,
+            samples=2
+        ] {5 - x};
+
+        \addplot[
+            thick,
+            domain=2:3,
+            samples=2
+        ] {3 + x - 2};
+
+        \addplot[
+            thick,
+            domain=3:4,
+            samples=2
+        ] {5 - x + 2};
+
+        % Linha vertical indicando a ondulação
+        \draw[<->, thick]
+            (axis cs:1,3) -- 
+            node[right=4pt] {$\Delta I_L$}
+            (axis cs:1,4);
+
+        % Marca do pico
+        \node[above] at (axis cs:4,4) {$I_{L,\mathrm{máx}}$};
+
+        % Marca do vale
+        \node[below] at (axis cs:4,3) {$I_{L,\mathrm{mín}}$};
+
+        % Indicação da corrente média
+        \node[right] at (axis cs:4,3.5) {$I_{L,\mathrm{média}}$};
+
+        \end{axis}
+    \end{tikzpicture}
+    \label{fig:ondulacao-corrente-indutor}
+\end{figure}
+
+\begin{equation}
+    \Delta I_L = 0{,}05 \cdot I_{\mathrm{OUT}}
+    \quad\Rightarrow\quad
+    \Delta I_L = 0{,}05 \cdot 3{,}33
+    \approx 0{,}167\,\mathrm{A}
+    \quad\Rightarrow\quad
+    \boxed{\Delta I_L \approx 0{,}167\,\mathrm{A}}
+    \label{eq:ondulacao-corrente}
+\end{equation}
+
+\begin{equation}
+    I_{L,\mathrm{pico}} =
+    I_{\mathrm{OUT}} + \frac{\Delta I_L}{2}
+    \quad\Rightarrow\quad
+    3{,}33 + \frac{0{,}167}{2}
+    \quad\Rightarrow\quad
+    \boxed{I_{L,\mathrm{pico}}\approx 3{,}41\,\mathrm{A}}
+    \label{eq:corrente-pico}
+\end{equation}
+
+\begin{equation}
+    I_{L,\mathrm{vale}} =
+    I_{\mathrm{OUT}} - \frac{\Delta I_L}{2}
+    \quad\Rightarrow\quad
+    3{,}33 - \frac{0{,}167}{2}
+    \quad\Rightarrow\quad
+    \boxed{I_{L,\mathrm{vale}}\approx 3{,}25\,\mathrm{A}}
+    \label{eq:corrente-vale}
+\end{equation}
+
+A indutância do Indutor pode ser determinada utilizando a equação \ref{eq:indutancia-buck}, todos os valorese necessários para a derteminação da mesma foram calculados nas equações anteriores. Substituindo eles obtemos o resultado na equação \ref{eq:valor-indutancia}.
+
+
+\begin{equation}
+    L =
+    \frac{(V_{\mathrm{IN}}-V_{\mathrm{OUT}})D}
+    {\Delta I_L f_S}
+    \label{eq:indutancia-buck}
+\end{equation}
+
+\begin{equation}
+    L =
+    \frac{(24-12)\cdot0{,}5}
+    {0{,}167\cdot50\times10^3}
+    \approx 0{,}718\,\mathrm{mH}
+    \quad\Rightarrow\quad
+    \boxed{L \approx 718\,\mu\mathrm{H}}
+    \label{eq:valor-indutancia}
+\end{equation}
+
+
+Assim encerra o processo de dimensionar o indutor, essas sçao as informações dele compiladas:
+
+\begin{table}[ht]
+    \centering
+    \caption{Parâmetros de projeto do indutor do conversor Buck.}
+    \label{tab:parametros-indutor}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Parâmetro} & \textbf{Valor} \\
+        \midrule
+        Tensão de entrada, $V_{\mathrm{IN}}$ 
+            & \SI{24}{\volt} \\
+        Tensão de saída, $V_{\mathrm{OUT}}$ 
+            & \SI{12}{\volt} \\
+        Potência de saída, $P_{\mathrm{OUT}}$ 
+            & \SI{40}{\watt} \\
+        Frequência de chaveamento, $f_{\mathrm{S}}$ 
+            & \SI{50}{\kilo\hertz} \\
+        Ciclo de trabalho, $D$ 
+            & 50\,\% \\
+        Corrente média, $I_{\mathrm{OUT}}$ 
+            & \SI{3.33}{\ampere} \\
+        Ondulação de corrente, $\Delta I_{\mathrm{L}}$ 
+            & \SI{0.167}{\ampere} \;(5\,\%) \\
+        Corrente de pico, $I_{\mathrm{L,pico}}$ 
+            & \SI{3.41}{\ampere} \\
+        Corrente de vale, $I_{\mathrm{L,vale}}$ 
+            & \SI{3.25}{\ampere} \\
+        Indutância calculada, $L$ 
+            & \SI{718}{\micro\henry} \\
+        Indutância selecionada 
+            & \SI{750}{\micro\henry} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Capacitor de saída}
+
+O capacitância de saída do indutor é encontrada por meio da equação \ref{eq:valor-capacitancia}.
+
+\begin{equation}
+    \Delta V_{\mathrm{OUT}} = 0{,}01 \cdot V_{\mathrm{OUT}}
+    \quad\Rightarrow\quad
+    \Delta V_{\mathrm{OUT}} = 0{,}01 \cdot 12 V
+    = 0{,}12\,\mathrm{V}
+    \quad\Rightarrow\quad
+    \boxed{\Delta V_{\mathrm{OUT}} = 0{,}12\,\mathrm{V}}
+    \label{eq:ondulacao-corrente}
+\end{equation}
+
+\begin{equation}
+    C_{\mathrm{OUT}} =
+    \frac{\Delta I_L}
+    {8\cdot f_s \cdot \Delta V_{OUT}} =
+    \frac{0{,}167}
+    {8\cdot 50 \times 10^{5} \cdot 0{,}12}
+    \approx 3{,}48\,\mu\mathrm{F}
+    \quad\Rightarrow\quad
+    \boxed{C_{\mathrm{OUT}} \approx 3{,}48\,\mu\mathrm{F}}
+    \label{eq:valor-capacitancia}
+\end{equation}
+
+\subsection{MOSFET}
+
+O MOSFET deve ser capaz de aguntear a tensão de entrada com uma margem de seguranaça, adotada em 1,5, ou seja a tensão entre o drain e o Source deve ser
+
+\begin{equation}
+    V_{DS}=V_{IN} \cdot 1,5 = 24 \cdot 1,5 = 36V
+\end{equation}
+
+Já a corrente que o MOSFET deve aguentar é a corrente eficaz de saida
+
+\begin{equation}
+    I_{Drms} = I_{OUT}*\sqrt{D}=3,33 \cdot \sqrt{0,5} = 2,35A
+\end{equation}
+
+\subsection{Diodo}
+
+Já o diodo deve ser capaz de aguntar uma corrente e uma tensão de polarização reversa similar a de VDS
+

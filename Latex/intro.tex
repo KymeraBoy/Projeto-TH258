@@ -1,0 +1,244 @@
+% ============================================= %
+% INTRODUÇÃO
+% ============================================= %
+
+\section{Introdução}
+
+Conversores CC-CC são circuitos da eletrônica de potência capazes de modificar o nível de tensão contínua entre uma fonte e uma carga por meio do acionamento de dispositivos semicondutores. Esses dispositivos são controlados por sinais periódicos de alta frequência com comprimento de onda modulado (PWM). Eles operam como chaves, regulando o tempo em que a fonte carrega, ou não, um dispositivo armazenador de energia, no caso um indutor. Essa configuração faz com que eles sejam mais eficientes energeticamente que reguladores lineares, com rendimento prático acima de 90\%.
+
+Dentro dessa categoria existem três topologias básicas (Buck, Boost e Buck-Boost); a que será abordada nesse trabalho será a Buck. Ela possui como função principal abaixar o nível de tensão da fonte para se adequar ao nível de tensão da carga. Seu funcionamento depende, além dos elementos já citados, também de um diodo de roda livre e um capacitor para filtragem da saída.
+
+A operação do conversor Buck é dividida em duas etapas definidas pelo estado da chave. 
+Quando a chave está fechada, a fonte passa a alimentar tanto o indutor quanto a carga, o diodo fica reversamente polaridado inpedindo o fluxo de corrente por ele. Isso faz com que o indutor armazene energia e que sua corrente aumente gradativamente.
+Quando a chave está aberta o diodo passa a conduzir, isso fecha um circuito entre o indutor e a carga. A energia armazenada no indutor passa a ser descarregada na carga fazendo a corrente de saída reduzir.
+
+As figuras \ref{fig:buck_chave_fechada} e \ref{fig:buck_chave_aberta} mostram o circuito de um conversor Buck e os seus equivalentes para as etapas de chave aberta e fechada. A partir desses estados, a constante comutação entre eles caracteriza a operação do conversor. Essa comutação é definida pelo sinal de controle, fazendo uma correlação entre eles, enquanto o sinal estive alto a chave permancerá fechada, e quando o sinal for baixo a chave permanecerá aberta. 
+
+\begin{figure}[h]
+    \centering
+    \caption{Circuito conversor Buck - Chave fechada}
+
+    % Circuito com chave fechada
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \begin{circuitikz}
+            % Fonte
+            \draw
+            (0,2) to[battery1, l=$V_{in}$] (0,0);
+
+            % Chave fechada
+            \draw
+            (0,2) to[normal closed switch, l=$S$] (2,2);
+
+            % Diodo de roda livre
+            \draw
+            (0,0) -- (2,0)
+            to[D, l=$D$] (2,2);
+
+            % Indutor e capacitor
+            \draw
+            (2,2) to[L, l=$L$] (4,2)
+            to[C, l=$C$] (4,0)
+            -- (2,0);
+
+            % Resistor de carga
+            \draw
+            (4,2) -- (6,2)
+            to[R, l=$R$] (6,0)
+            -- (4,0);
+        \end{circuitikz}
+
+        \textbf{(a)} Circuito elétrico
+    \end{minipage}
+    \hfill
+    % Circuito com chave aberta
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \begin{circuitikz}
+            % Fonte
+            \draw
+            (0,2) to[battery1, l=$V_{in}$] (0,0);
+
+            % Chave aberta
+            \draw
+            (0,2) -- (2,2);
+
+            % Circuito aberto
+            \draw
+            (0,0) -- (2,0)
+            to[open, *-*] (2,2);
+
+            % Indutor e capacitor
+            \draw
+            (2,2) to[L, l=$L$] (4,2)
+            to[C, l=$C$] (4,0)
+            -- (2,0);
+
+            % Resistor de carga
+            \draw
+            (4,2) -- (6,2)
+            to[R, l=$R$] (6,0)
+            -- (4,0);
+        \end{circuitikz}
+
+        \textbf{(b)} Circuito equivalente
+    \end{minipage}
+
+    \footnotesize Fonte: Os Autores
+    \label{fig:buck_chave_fechada}
+\end{figure}
+   
+\begin{figure}[h]
+    \centering
+    \caption{Circuito conversor Buck - Chave aberta}
+
+    % Circuito com chave aberta
+    \begin{minipage}{0.48\textwidth}
+        \centering
+
+        \begin{circuitikz}
+            % Fonte
+            \draw
+            (0,2) to[battery1, l=$V_{in}$] (0,0);
+
+            % Chave aberta
+            \draw
+            (0,2) to[normal open switch, l=$S$] (2,2);
+
+            % Diodo de roda livre
+            \draw
+            (0,0) -- (2,0)
+            to[D, l=$D$] (2,2);
+
+            % Indutor e capacitor
+            \draw
+            (2,2) to[L, l=$L$] (4,2)
+            to[C, l=$C$] (4,0)
+            -- (2,0);
+
+            % Resistor de carga
+            \draw
+            (4,2) -- (6,2)
+            to[R, l=$R$] (6,0)
+            -- (4,0);
+        \end{circuitikz}
+
+        \textbf{(a)} Circuito elétrico
+    \end{minipage}
+    \hfill
+    % Circuito equivalente
+    \begin{minipage}{0.48\textwidth}
+        \centering
+
+        \begin{circuitikz}
+            % Ramo da fonte/chave removido
+
+            % Diodo de roda livre
+            \draw
+            (0,0) -- (0,2);
+
+            % Indutor e capacitor
+            \draw
+            (0,2) to[L, l=$L$] (2,2)
+            to[C, l=$C$] (2,0)
+            -- (0,0);
+
+            % Resistor de carga
+            \draw
+            (2,2) -- (4,2)
+            to[R, l=$R$] (4,0)
+            -- (2,0);
+        \end{circuitikz}
+
+        \textbf{(b)} Circuito equivalente
+    \end{minipage}
+
+    \label{fig:buck_chave_aberta}
+\end{figure}
+
+A razão entre a duração do sinal alto e seu périodo de comutação é chamado de \textit{Duty Cyle}, ele é um parametro importante pois influência na relação entre as tensões de saída e entrada, de forma que quanto maior for o \textit{Duty Cyle}, mais próxima da tensão de entrada será a tensão de saída, conforme a equação \ref{eq:duty-cycle}.  Os gráficos da figura \ref{fig:sinal-corrente-indutor} demonstram o comportamento da corrente do indutor de acordo com o sinal de controle.
+
+\begin{equation}
+    D = \frac{V_o}{V_i}
+    \label{eq:duty-cycle}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\caption{Sinal de controle e corrente do indutor do conversor Buck}
+\begin{tikzpicture}
+\begin{groupplot}[
+    group style={
+        group size=1 by 2,
+        vertical sep=1cm
+    },
+    width=0.9\textwidth,
+    height=4cm,
+    xmin=0,
+    xmax=3,
+    xtick={0,1,2,3},
+    xticklabels={$0$,$T$,$2T$,$3T$},
+    grid=major
+]
+
+% ==================================================
+% SINAL DE CONTROLE
+% ==================================================
+\nextgroupplot[
+    ylabel={$S$},
+    ymin=-0.2,
+    ymax=1.2,
+    ytick={0,1},
+    yticklabels={0,1},
+    xlabel={}
+]
+
+\addplot[
+    const plot,
+    thick
+] coordinates {
+    (0,1)
+    (0.5,1)
+    (0.5,0)
+    (1,0)
+    (1,1)
+    (1.5,1)
+    (1.5,0)
+    (2,0)
+    (2,1)
+    (2.5,1)
+    (2.5,0)
+    (3,0)
+};
+
+
+% ==================================================
+% CORRENTE DO INDUTOR
+% ==================================================
+\nextgroupplot[
+    xlabel={$t$},
+    ylabel={$i_L$},
+    ymin=0.5,
+    ymax=1.5,
+    ytick={0.75,1,1.25},
+    yticklabels={$I_{\min}$,$I_{\mathrm{médio}}$,$I_{\max}$}
+]
+
+\addplot[
+    thick
+] coordinates {
+    (0,0.75)
+    (0.5,1.25)
+    (1,0.75)
+    (1.5,1.25)
+    (2,0.75)
+    (2.5,1.25)
+    (3,0.75)
+};
+
+\end{groupplot}
+
+\footnotesize Fonte: Os Autores
+\label{fig:sinal-corrente-indutor}
+\end{tikzpicture}
+\end{figure}
